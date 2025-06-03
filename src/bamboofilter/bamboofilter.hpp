@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <sys/resource.h>
 
 #include "bamboofilter/predefine.h"
 #include "bamboofilter/segment.hpp"
@@ -12,9 +13,20 @@
 
 using std::vector;
 
+// Function to get current memory usage
+inline size_t get_memory_usage() {
+    struct rusage usage;
+    getrusage(RUSAGE_SELF, &usage);
+    return usage.ru_maxrss * 1024; // Convert KB to bytes
+}
+
 class BambooFilter
 {
 public:
+    size_t last_expand_before_memory = 0;
+    size_t last_expand_after_memory = 0;
+
+
     const uint32_t INIT_TABLE_BITS;
     uint32_t num_table_bits_;
 
@@ -147,6 +159,7 @@ bool BambooFilter::Delete(const char *key)
 
 void BambooFilter::Extend()
 {
+    size_t memBeforeExpand = get_memory_usage(); // added
     Segment *src = hash_table_[next_split_idx_];
     Segment *dst = new Segment(*src);
     hash_table_.push_back(dst);
@@ -162,6 +175,10 @@ void BambooFilter::Extend()
     {
         next_split_idx_ = 0;
     }
+    size_t memAfterExpand = get_memory_usage();  // added
+    
+    last_expand_before_memory = memBeforeExpand;    // added
+    last_expand_after_memory = memAfterExpand;  // added
 }
 
 void BambooFilter::Compress()

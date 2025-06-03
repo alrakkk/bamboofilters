@@ -13,7 +13,6 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include <openssl/rand.h>
 
 #include "bamboofilter/bamboofilter.hpp"
 #include "bamboofilter/bitsutil.h"
