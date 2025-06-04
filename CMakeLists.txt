@@ -18,7 +18,7 @@ add_subdirectory(tools)
 
 # Add download target
 add_custom_target(download_ecoli
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/download_ecoli.sh
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tools/download_ecoli.sh
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Downloading E. coli reference genome"
 )
